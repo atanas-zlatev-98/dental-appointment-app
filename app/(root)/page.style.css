@@ -1,0 +1,35 @@
+.top-bg-image {
+    background: url('../../public//images/bg/bg-3.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100vh;
+}
+
+.font-size-h1 {
+    font-size: 150px;
+    line-height: 1;
+}
+
+
+@media (max-width: 768px) {
+    .top-bg-image {
+        background: url('../../public//images/bg/bg-3-mobile-2.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .font-size-h1 {
+        font-size: 60px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .font-size-h1 {
+        font-size: 90px;
+    }
+    .med-device {
+        padding: 20px;
+    }
+}
