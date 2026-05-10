@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model User {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  email        String   @unique
+  password    String
+  phone        String?
+  role         Role     @default(PATIENT)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  appointments Appointment[]
+
+  @@map("users")
+}
+
+model Appointment {
+  id        String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  date      DateTime
+  startTime String
+  endTime   String
+  status    AppointmentStatus @default(PENDING)
+  notes     String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  procedureId String    @db.Uuid
+  procedure   Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([procedureId])
+  @@index([date, status])
+  @@map("appointments")
+}
+
+model Procedure {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String   @unique
+  duration    Int
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  appointments Appointment[]
+
+  @@map("procedures")
+}
+
+enum Role {
+  PATIENT
+  ADMIN
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+}
