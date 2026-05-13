@@ -38,7 +38,7 @@ export default function NavigationBar() {
 
           <div className="hidden md:flex items-center gap-2">
 
-            <Link href="/login" className="text-md px-4 py-2 rounded-md text-blue-950 hover:bg-blue-50 transition-colors">
+            <Link href="/sign-in" className="text-md px-4 py-2 rounded-md text-blue-950 hover:bg-blue-50 transition-colors">
               Login
             </Link>
 

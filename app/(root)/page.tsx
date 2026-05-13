@@ -17,7 +17,7 @@ export default function HomePage() {
         </div>
 
         <div className='w-xl hidden md:flex ml-1'>
-          <Image src={toothImage} alt="Tooth" />
+          <Image src={toothImage} alt="Tooth" loading='eager'/>
         </div>
 
       </div>
