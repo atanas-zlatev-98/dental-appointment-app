@@ -5,18 +5,46 @@ import Link from "next/link";
 import logo from "../../../../public/images/bg/logo-2.png";
 import { ProfilePicturePicker } from "@/components/profile-picture-picker/ProfilePicturePicker";
 import { useState } from "react";
+import { SignUpFormData } from "@/app/types/auth-types";
+import { registerUser } from "@/lib/actions/auth.actions";
+import { signIn } from "next-auth/react";
+
+const initialState = {
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+}
 
 export function SignUpForm() {
 
     const [profilePictureUrl, setProfilePictureUrl] = useState<string>('');
+    const [formData,setFormData] = useState<SignUpFormData>(initialState);
 
     const handleImageChange = (file: File) => {
         const url = URL.createObjectURL(file);
         setProfilePictureUrl(url);
     };
 
+    const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData(oldState => (
+            {...oldState, [e.target.name]: e.target.value}
+        ))
+    }
+
+    const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try{
+            const response = await registerUser(formData);
+            await signIn("credentials", {email: formData.email, password: formData.password, redirectTo: '/'});
+            console.log(response);
+        }catch(err){
+            console.error("Error registering user:", err);
+        }
+    }
+
     return (
-          <form className="flex flex-col">
+          <form className="flex flex-col" onSubmit={submitHandler}>
 
             <h1 className="text-md font-bold mb-6 text-left text-blue-950 flex items-center">
                 <Image src={logo} alt="Dental Appointment App" width={30} height={30} className="p-1" /> Dental Appointment App</h1>
@@ -33,7 +61,7 @@ export function SignUpForm() {
                 <label htmlFor="name" className="block text-md font-bold text-gray-700 mb-1 ">
                     First Name and Last Name
                 </label>
-                <input type="text" id="name" placeholder="Your first and last name..." className="p-2 border border-gray-400 text-black rounded text-md" />
+                <input type="text" name="name" id="name" placeholder="Your first and last name..." className="p-2 border border-gray-400 text-black rounded text-md" value={formData.name} onChange={changeHandler} />
             </div>
 
 
@@ -41,21 +69,28 @@ export function SignUpForm() {
                 <label htmlFor="email" className="block text-md font-bold text-gray-700 mb-1">
                     Email
                 </label>
-                <input type="email" id="email" placeholder="Your email..." className="p-2 border border-gray-400 text-black rounded text-md" />
+                <input type="email" name="email" id="email" placeholder="Your email..." className="p-2 border border-gray-400 text-black rounded text-md" value={formData.email} onChange={changeHandler} />
+            </div>
+
+              <div className="form-g flex flex-col mb-4">
+                <label htmlFor="phone" className="block text-md font-bold text-gray-700 mb-1">
+                    Phone
+                </label>
+                <input type="number" name="phone" id="phone" placeholder="Your phone number..." className="p-2 border border-gray-400 text-black rounded text-md" value={formData.phone} onChange={changeHandler} />
             </div>
 
             <div className="form-g flex flex-col mb-4">
                 <label htmlFor="password" className="block text-md font-bold text-gray-700 mb-1">
                     Password
                 </label>
-                <input type="password" id="password" placeholder="Your password..." className="p-2 border border-gray-400 text-black rounded text-md" />
+                <input type="password" name="password" id="password" placeholder="Your password..." className="p-2 border border-gray-400 text-black rounded text-md" value={formData.password} onChange={changeHandler} />
             </div>
 
              <div className="form-g flex flex-col mb-4">
                 <label htmlFor="confirmPassword" className="block text-md font-bold text-gray-700 mb-1">
                     Confirm Password
                 </label>
-                <input type="password" id="confirmPassword" placeholder="Confirm your password..." className="p-2 border border-gray-400 text-black rounded text-md" />
+                <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm your password..." className="p-2 border border-gray-400 text-black rounded text-md" />
             </div>
 
             <div className="form-g">

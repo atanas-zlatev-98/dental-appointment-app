@@ -1,6 +1,14 @@
 import { SignInForm } from "./sign-in-form/SignInForm";
+import {auth} from '@/lib/auth';
+import { redirect } from "next/navigation";
 
-export default function SignInPage() {
+export default async function SignInPage() {
+    const session = await auth();
+
+    if(session){
+        redirect('/');
+    }
+    
     return (
         <div className="w-full max-w-md rounded-lg bg-white border flex flex-col p-5">
             {/* <h2 className="text-2xl font-bold mb-6 text-center text-blue-950">Sign In</h2 */}
