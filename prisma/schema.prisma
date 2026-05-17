@@ -12,6 +12,7 @@ model User {
   name         String
   email        String   @unique
   password     String
+  profilePictureUrl String?
   phone        String?
   role         Role     @default(PATIENT)
   createdAt    DateTime @default(now())

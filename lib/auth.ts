@@ -30,6 +30,8 @@ export const config = {
                     }
                 })
 
+                 console.log("DB user:", findUser);
+
                if(findUser && findUser.password){
                     const isPasswordValid = await bcrypt.compare(credentials.password as string, findUser.password);
 
@@ -39,6 +41,7 @@ export const config = {
                             name: findUser.name,
                             email: findUser.email,
                             role: findUser.role,
+                            profilePictureUrl: findUser.profilePictureUrl,
                         };
                     }
                }
@@ -52,8 +55,10 @@ export const config = {
             session.user.id = token.sub;
             session.user.role = token.role;
             session.user.name = token.name;
+            session.user.profilePictureUrl = token.profilePictureUrl;
 
-            console.log(token);
+            // console.log(token);
+            console.log("Session:", session);
            
             if(trigger === "update"){
                session.user = user.name; 
@@ -65,6 +70,7 @@ export const config = {
         async jwt({token, user,trigger,session}:any){
             if(user){
                 token.role = user.role;
+                token.profilePictureUrl = user.profilePictureUrl;
             }
             return token;
         }

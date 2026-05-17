@@ -7,23 +7,26 @@ import { ProfilePicturePicker } from "@/components/profile-picture-picker/Profil
 import { useState } from "react";
 import { SignUpFormData } from "@/app/types/auth-types";
 import { registerUser } from "@/lib/actions/auth.actions";
-import { signIn } from "next-auth/react";
+import { imageUpload } from "@/components/profile-picture-picker/image-upload";
 
 const initialState = {
     name: '',
     email: '',
     phone: '',
     password: '',
+    profilePictureUrl:  '',
 }
 
 export function SignUpForm() {
 
     const [profilePictureUrl, setProfilePictureUrl] = useState<string>('');
+    const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
     const [formData,setFormData] = useState<SignUpFormData>(initialState);
 
-    const handleImageChange = (file: File) => {
+    const handleImageChange = async (file: File) => {
         const url = URL.createObjectURL(file);
         setProfilePictureUrl(url);
+        setProfilePictureFile(file);
     };
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,9 +38,8 @@ export function SignUpForm() {
     const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try{
-            const response = await registerUser(formData);
-            await signIn("credentials", {email: formData.email, password: formData.password, redirectTo: '/'});
-            console.log(response);
+            const uploadedImageUrl = await imageUpload(profilePictureFile!);
+            const response = await registerUser({...formData, profilePictureUrl: uploadedImageUrl});
         }catch(err){
             console.error("Error registering user:", err);
         }

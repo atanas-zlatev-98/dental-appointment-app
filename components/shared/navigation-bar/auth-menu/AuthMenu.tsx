@@ -1,17 +1,20 @@
 import { auth } from "@/lib/auth";
 import Link from "next/link";
+import Image from "next/image";
 import LogoutButton from "../log-out-button/LogOutButton";
 
 export default async function AuthMenu() {
+  
   const session = await auth();
 
   return(
-    <div className="md:flex max-w-[400px] w-full h-16 items-center justify-center">
+    <div className="md:flex max-w-100 w-full h-16 items-center justify-center">
 
       {session ? (
 
         <div className="px-4 py-2 rounded-md text-lg font-medium text-black flex flex-row items-center gap-4">
           <p>Welcome, <span className="font-bold">{session.user?.name}!</span></p>
+          <Image src={session.user?.profilePictureUrl} alt="Profile Picture" width={40} height={40} className="rounded-full"/>
           <LogoutButton/>
         </div>
 

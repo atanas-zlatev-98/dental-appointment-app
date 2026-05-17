@@ -7,7 +7,7 @@ import {signIn, signOut} from '@/lib/auth';
 
 export async function registerUser(formData: SignUpFormData) {
 
-  const { name, email, password, phone } = formData;
+  const { name, email, password, phone, profilePictureUrl } = formData;
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
@@ -17,10 +17,11 @@ export async function registerUser(formData: SignUpFormData) {
     return { error: "An account with this email already exists" };
   }
 
- const user =await prisma.user.create({
+ const user = await prisma.user.create({
     data:{
       name,
       email,
+      profilePictureUrl,
       phone: phone || null,
       password: await bcrypt.hash(password, 10),
     },
@@ -28,6 +29,8 @@ export async function registerUser(formData: SignUpFormData) {
       appointments: true,
     }
   })
+
+  await signIn("credentials", {email, password, redirectTo: '/'});
 
   return user;
 

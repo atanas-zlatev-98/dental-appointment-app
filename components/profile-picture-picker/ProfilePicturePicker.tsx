@@ -7,18 +7,16 @@ export function ProfilePicturePicker({ imageUrl, onImageChange}: ImagePickerProp
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
     const file = e.target.files?.[0];
     
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-
         alert("Please select an image file.");
         e.target.value = "";
         return;
-
     }
 
     onImageChange(file);
